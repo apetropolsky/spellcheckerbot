@@ -153,7 +153,7 @@ func main() {
 				respToUser = respToUser + commonWords
 			}
 			if respToUser == "" {
-				respToUser = "всё норм"
+				respToUser = "Выглядит нормально"
 			}
 		}
 		msg := tb.NewMessage(update.Message.Chat.ID, respToUser)
