@@ -136,7 +136,7 @@ func countWord(arr []string) string {
 }
 
 func main() {
-	bot, err := tb.NewBotAPI("888259362:AAFLvNrG0oLzg2jmLWnZ0-Ve9CZayF-k2Hw")
+	bot, err := tb.NewBotAPI(os.Getenv("APITOKEN"))
 	checkErr(err)
 
 	ch := tb.NewUpdate(0)
