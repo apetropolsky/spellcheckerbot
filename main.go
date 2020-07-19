@@ -176,7 +176,7 @@ func main() {
 			if notEmptyString(commonWords) {
 				replyToUser = replyToUser + commonWords
 			}
-			if notEmptyString(replyToUser) {
+			if !notEmptyString(replyToUser) {
 				replyToUser = "Выглядит нормально"
 			}
 		}
