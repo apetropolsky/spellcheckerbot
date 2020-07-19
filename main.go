@@ -19,12 +19,25 @@ const yaSpeller string = "https://speller.yandex.net/services/spellservice.json/
 
 type spelledJSON struct {
 	Word    string   `json:"word"`
-	Spelled []string `json:"s"`
+	Guesses []string `json:"s"`
 }
 
 type counted struct {
 	Word  string
 	Times int
+}
+
+func notEmptyString(s string) bool {
+	if len(s) > 0 {
+		return false
+	}
+	return true
+}
+
+func checkErr(e error) {
+	if e != nil {
+		panic(e)
+	}
 }
 
 func findInSlice(arr []string, val string) bool {
@@ -74,19 +87,13 @@ func getSpell(url string, text string) string {
 				continue
 			}
 			processedWords = append(processedWords, i.Word)
-			for _, j := range i.Spelled {
+			for _, j := range i.Guesses {
 				wordGuess = wordGuess + fmt.Sprintf("%s? ", j)
 			}
 			result = result + fmt.Sprintf("%s – %s\n", i.Word, wordGuess)
 		}
 	}
 	return result
-}
-
-func checkErr(e error) {
-	if e != nil {
-		panic(e)
-	}
 }
 
 func getFormattedLine(arr []string) string {
@@ -148,35 +155,32 @@ func main() {
 	updates.Clear()
 
 	for update := range updates {
-		if update.UpdateID >= ch.Offset {
-			ch.Offset = update.UpdateID + 1
-		}
+		var replyToUser string
 
-		var respToUser string
 		if update.Message.IsCommand() {
 			switch update.Message.Command() {
 			case "start":
-				respToUser = "Давай текст до 10000 знаков, поглядим"
+				replyToUser = "Давай текст до 10000 знаков, поглядим"
 			case "faq":
 				faq := readFile("/var/spellchecker/faq")
-				respToUser = strings.Join(faq, "\n")
+				replyToUser = strings.Join(faq, "\n")
 			case "credits":
-				respToUser = "@apetropolsky"
+				replyToUser = "@apetropolsky"
 			}
 		} else {
 			spelled := getSpell(yaSpeller, update.Message.Text)
 			commonWords := countWord(strings.Fields(update.Message.Text))
-			if spelled != "" {
-				respToUser = respToUser + spelled
+			if notEmptyString(spelled) {
+				replyToUser = replyToUser + spelled
 			}
-			if commonWords != "" {
-				respToUser = respToUser + commonWords
+			if notEmptyString(commonWords) {
+				replyToUser = replyToUser + commonWords
 			}
-			if respToUser == "" {
-				respToUser = "Выглядит нормально"
+			if notEmptyString(replyToUser) {
+				replyToUser = "Выглядит нормально"
 			}
 		}
-		msg := tb.NewMessage(update.Message.Chat.ID, respToUser)
+		msg := tb.NewMessage(update.Message.Chat.ID, replyToUser)
 		bot.Send(msg)
 	}
 }
