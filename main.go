@@ -29,9 +29,9 @@ type counted struct {
 
 func notEmptyString(s string) bool {
 	if len(s) > 0 {
-		return false
+		return true
 	}
-	return true
+	return false
 }
 
 func checkErr(e error) {
