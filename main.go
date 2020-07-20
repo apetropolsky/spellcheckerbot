@@ -166,6 +166,9 @@ func main() {
 				replyToUser = strings.Join(faq, "\n")
 			case "credits":
 				replyToUser = "@apetropolsky"
+			case "news":
+				news := readFile("/var/spellchecker/news")
+				replyToUser = strings.Join(news, "\n")
 			}
 		} else {
 			spelled := getSpell(yaSpeller, update.Message.Text)
