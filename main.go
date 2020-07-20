@@ -65,7 +65,7 @@ func readFile(path string) []string {
 
 func getSpell(url string, text string) string {
 	var words []spelledJSON
-	text = fmt.Sprintf("text=%s&lang=&options=&format=", text)
+	text = fmt.Sprintf("text=%s&lang=ru,en,uk&options=&format=", text)
 	body := strings.NewReader(text)
 
 	resp, err := http.Post(url, "application/x-www-form-urlencoded", body)
